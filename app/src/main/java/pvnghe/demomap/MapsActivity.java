@@ -1,6 +1,7 @@
 package pvnghe.demomap;
 
 import android.graphics.BitmapFactory;
+import android.graphics.Color;
 import android.graphics.drawable.BitmapDrawable;
 import android.support.v4.app.FragmentActivity;
 import android.os.Bundle;
@@ -13,6 +14,8 @@ import com.google.android.gms.maps.model.BitmapDescriptor;
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
+import com.google.android.gms.maps.model.Polygon;
+import com.google.android.gms.maps.model.PolygonOptions;
 
 public class MapsActivity extends FragmentActivity implements OnMapReadyCallback {
 
@@ -43,7 +46,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         mMap = googleMap;
 
         // Add a marker in Sydney and move the camera
-        LatLng vietnamLatLng = new LatLng(10.853680, 106.628355);
+        LatLng vietnamLatLng = new LatLng(10.852980, 106.626994);
 
         MarkerOptions markerOptions = new MarkerOptions()
                 .icon(BitmapDescriptorFactory.fromResource(R.mipmap.ic_launcher_round))
@@ -53,5 +56,19 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                 .snippet("Aki");
         mMap.addMarker(markerOptions);
         mMap.moveCamera(CameraUpdateFactory.newLatLng(vietnamLatLng));
+
+        // Instantiates a new Polygon object and adds points to define a rectangle
+        PolygonOptions rectOptions = new PolygonOptions()
+                .add(new LatLng(10.852980, 106.626994),
+                        new LatLng(10.854287, 106.626383),
+                        new LatLng(10.855014, 106.627885),
+                        new LatLng(10.855435, 106.627906),
+                        new LatLng(10.855467, 106.628925),
+                        new LatLng(10.853770, 106.628668))
+                .strokeColor(Color.GREEN)
+                .fillColor(Color.argb(100,51, 255, 51));
+
+        // Get back the mutable Polygon
+        Polygon polygon = mMap.addPolygon(rectOptions);
     }
 }
