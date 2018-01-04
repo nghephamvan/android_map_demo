@@ -1,5 +1,7 @@
 package pvnghe.demomap;
 
+import android.graphics.BitmapFactory;
+import android.graphics.drawable.BitmapDrawable;
 import android.support.v4.app.FragmentActivity;
 import android.os.Bundle;
 
@@ -7,6 +9,8 @@ import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
+import com.google.android.gms.maps.model.BitmapDescriptor;
+import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
 
@@ -39,8 +43,15 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         mMap = googleMap;
 
         // Add a marker in Sydney and move the camera
-        LatLng vietnamLatLng = new LatLng(10.7546664, 106.415037610);
-        mMap.addMarker(new MarkerOptions().position(vietnamLatLng).title("Marker in Viet Nam"));
+        LatLng vietnamLatLng = new LatLng(10.853680, 106.628355);
+
+        MarkerOptions markerOptions = new MarkerOptions()
+                .icon(BitmapDescriptorFactory.fromResource(R.mipmap.ic_launcher_round))
+                .title("Ame")
+                .draggable(true)
+                .position(vietnamLatLng)
+                .snippet("Aki");
+        mMap.addMarker(markerOptions);
         mMap.moveCamera(CameraUpdateFactory.newLatLng(vietnamLatLng));
     }
 }
