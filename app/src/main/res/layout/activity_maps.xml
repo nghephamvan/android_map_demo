@@ -10,7 +10,7 @@
               android:layout_height="match_parent"
               map:cameraBearing="112.5"
               map:cameraTilt="30"
-              map:cameraZoom="16"
+              map:cameraZoom="18"
               map:mapType="normal"
               map:uiCompass="true"
               map:uiRotateGestures="true"
@@ -22,9 +22,23 @@
 
     </fragment>
 
-    <Button
-        android:id="@+id/btn_draw_poligon"
+    <LinearLayout
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="@string/draw_poligon"/>
+        android:layout_alignParentRight="true"
+        android:orientation="vertical">
+        <Button
+            android:id="@+id/btn_draw_poligon"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/draw_poligon"/>
+
+        <ImageView
+            android:id="@+id/iv_current_position"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="right"
+            android:background="@drawable/marker_current_location"/>
+
+    </LinearLayout>
 </RelativeLayout>
