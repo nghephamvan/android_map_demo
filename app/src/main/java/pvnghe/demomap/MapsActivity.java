@@ -25,6 +25,7 @@ import com.google.android.gms.maps.model.PatternItem;
 import com.google.android.gms.maps.model.PointOfInterest;
 import com.google.android.gms.maps.model.Polygon;
 import com.google.android.gms.maps.model.PolygonOptions;
+import com.google.android.gms.maps.model.Polyline;
 import com.google.android.gms.maps.model.PolylineOptions;
 
 import java.util.ArrayList;
@@ -46,6 +47,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     private GoogleMap mMap;
     private PolygonOptions polygonOptions;
     private Polygon polygon;
+    private Polyline polyline;
     private ArrayList<LatLng> fieldPoligons;
     private Button btn_draw_poligon;
     private ImageView iv_current_position;
@@ -154,13 +156,33 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                 .anchor(0.5f, 0.5f)
                 .position(currentLaLatLng);
 
-        int startPoint = fieldPoligons.size() - 1;
         fieldPoligons.add(currentLaLatLng);
         if (fieldPoligons.size() > 1) {
-            createFieldMidPoint(fieldPoligons.get(startPoint), fieldPoligons.get(fieldPoligons.size() - 1));
+            // get 2 last Latlng
+            int oldPosition = fieldPoligons.size() - 2;
+            LatLng startPoint = fieldPoligons.get(oldPosition);
+            LatLng endPoint = fieldPoligons.get(fieldPoligons.size() - 1);
+
+            // create marker middle of 2 points
+            createFieldMidPoint(startPoint, endPoint);
+            if (polyline == null) {
+                polyline = mMap.addPolyline(new PolylineOptions()
+                        .clickable(true)
+                        .add(startPoint, endPoint)
+                        .color(Color.GREEN)
+                        .geodesic(true));
+            }
+
             if (fieldPoligons.size() > 2) {
                 createFieldMidPoint(fieldPoligons.get(0), fieldPoligons.get(fieldPoligons.size() - 1));
+
+                // draw polygon map
                 createFieldArea(fieldPoligons);
+
+                if (polyline != null) {
+                    // Clear all lines
+                    polyline.remove();
+                }
             }
         }
 
@@ -186,12 +208,6 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     }
 
     private void createFieldMidPoint(LatLng startPoint, LatLng endPoint) {
-        PolylineOptions polylineOptions = new PolylineOptions()
-                .clickable(true)
-                .add(startPoint, endPoint)
-                .color(Color.GREEN)
-                .geodesic(true);
-
         LatLng midPoint = getMiddleLatLng(startPoint, endPoint);
 
         MarkerOptions markerOptions = new MarkerOptions()
@@ -200,8 +216,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                 .anchor(0.5f, 0.5f)
                 .position(midPoint);
 
-        mMap.addMarker(markerOptions);
-        mMap.addPolyline(polylineOptions);
+        Marker marker = mMap.addMarker(markerOptions);
     }
 
     @NonNull
