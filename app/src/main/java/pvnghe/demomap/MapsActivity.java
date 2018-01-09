@@ -32,17 +32,9 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-public class MapsActivity extends FragmentActivity implements OnMapReadyCallback {
+import pvnghe.demomap.model.MarkerModel;
 
-    private static final int POLYGON_STROKE_WIDTH_PX = 8;
-    private static final int PATTERN_DASH_LENGTH_PX = 20;
-    private static final int PATTERN_GAP_LENGTH_PX = 20;
-    private static final PatternItem DOT = new Dot();
-    private static final PatternItem DASH = new Dash(PATTERN_DASH_LENGTH_PX);
-    private static final PatternItem GAP = new Gap(PATTERN_GAP_LENGTH_PX);
-
-    // Create a stroke pattern of a gap followed by a dot.
-    private static final List<PatternItem> PATTERN_POLYGON_BETA = Arrays.asList(DOT, GAP, DASH, GAP);
+public class MapsActivity extends FragmentActivity implements OnMapReadyCallback, GoogleMap.OnMarkerClickListener, GoogleMap.OnMarkerDragListener {
 
     private GoogleMap mMap;
     private PolygonOptions polygonOptions;
@@ -52,8 +44,11 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     private Button btn_draw_poligon;
     private ImageView iv_current_position;
     private SupportMapFragment mapFragment;
+    private ArrayList<Marker> markerLists;
 
     private boolean isDrawField = false;
+    private boolean MARKER_POINT = true;
+    private boolean MARKER_MIDDLE = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -64,6 +59,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                 .findFragmentById(R.id.map);
 
         fieldPoligons = new ArrayList<LatLng>();
+        markerLists = new ArrayList<>();
 
         btn_draw_poligon = findViewById(R.id.btn_draw_poligon);
         iv_current_position = findViewById(R.id.iv_current_position);
@@ -106,6 +102,9 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     @Override
     public void onMapReady(GoogleMap googleMap) {
         mMap = googleMap;
+        mMap.setOnMarkerClickListener(this);
+        mMap.setOnMarkerDragListener(this);
+
         mMap.setOnMapClickListener(new GoogleMap.OnMapClickListener() {
             @Override
             public void onMapClick(LatLng currentLaLatLng) {
@@ -186,7 +185,9 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
             }
         }
 
-        mMap.addMarker(markerOptions);
+        Marker marker = mMap.addMarker(markerOptions);
+        marker.setTag(MARKER_POINT);
+        markerLists.add(marker);
     }
 
     private void createFieldArea(ArrayList<LatLng> fieldPoligons) {
@@ -204,7 +205,19 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                     .fillColor(Color.argb(100, 51, 255, 51)));
         }
 
-        polygon.setStrokeWidth(POLYGON_STROKE_WIDTH_PX);
+        if (markerLists != null && markerLists.size() > 7) {
+            for (int i = markerLists.size() - 1; i > 0; i --) {
+                if (markerLists.get(i - 1).getTag() == markerLists.get(i).getTag()) {
+                    // Remove marker
+                    Marker marker = markerLists.get(i - 1);
+                    marker.remove();
+
+                    // remove marker list
+                    markerLists.remove(i - 1);
+                    i--;
+                }
+            }
+        }
     }
 
     private void createFieldMidPoint(LatLng startPoint, LatLng endPoint) {
@@ -217,6 +230,8 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                 .position(midPoint);
 
         Marker marker = mMap.addMarker(markerOptions);
+        marker.setTag(MARKER_MIDDLE);
+        markerLists.add(marker);
     }
 
     @NonNull
@@ -224,5 +239,26 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         double midLat = (startPoint.latitude + endPoint.latitude) / 2;
         double midlon = (startPoint.longitude + endPoint.longitude) / 2;
         return new LatLng(midLat, midlon);
+    }
+
+    @Override
+    public boolean onMarkerClick(Marker marker) {
+
+        return false;
+    }
+
+    @Override
+    public void onMarkerDragStart(Marker marker) {
+
+    }
+
+    @Override
+    public void onMarkerDrag(Marker marker) {
+
+    }
+
+    @Override
+    public void onMarkerDragEnd(Marker marker) {
+
     }
 }

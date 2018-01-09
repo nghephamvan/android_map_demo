@@ -35,4 +35,8 @@ public class MarkerModel {
         this.marker = marker;
         this.isPoint = isPoint;
     }
+
+    public MarkerModel(Marker marker) {
+        this.marker = marker;
+    }
 }
